@@ -41,7 +41,7 @@ echo
 
 # 4. Update main.pl
 echo "🔧 Updating database path in main.pl..."
-sed -i.bak "s|SET_YOUR_TAXOBASE_DB|$taxobase_path|" bin/test.pl
+sed -i.bak "s|SET_YOUR_TAXOBASE_DB|$taxobase_path|" bin/main.pl
 
 # 5. Update ncbi_agent.pl
 echo "🔧 Inserting user email and API key into ncbi_agent.pl..."
@@ -55,5 +55,5 @@ echo
 echo "✅ Setup complete! You can now run:"
 echo
 echo "   conda activate taxobase_env"
-echo "   perl bin/test.pl my_input.tsv"
+echo "   perl bin/main.pl my_input.tsv"
 echo
