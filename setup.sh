@@ -1,0 +1,47 @@
+#!/bin/bash
+
+echo "📦 Setting up TaxoBaseToolkit..."
+
+# 1. Create conda environment
+echo "⏳ Creating Conda environment 'taxobase_env'..."
+conda create -y -n taxobase_env perl perl-dbi perl-dbd-sqlite perl-uri perl-json perl-libwww-perl perl-xml-simple perl-list-moreutils
+
+echo "✅ Conda environment created!"
+echo "👉 To activate it now: conda activate taxobase_env"
+echo
+
+# 2. Prompt for user config
+read -p "📧 Enter your NCBI email: " user_email
+read -p "🔑 Enter your NCBI API key: " user_apikey
+read -p "📂 Enter full path to where TaxoBase.db should be stored: " taxobase_path
+
+# 3. Download the DB
+echo "⏬ Downloading latest TaxoBase.db from OSF..."
+wget -q https://osf.io/7gwqr/download -O "$taxobase_path"
+
+if [ $? -ne 0 ]; then
+  echo "❌ Download failed. Please check your internet connection or URL."
+  exit 1
+fi
+
+echo "✅ Downloaded TaxoBase.db to: $taxobase_path"
+echo
+
+# 4. Update main.pl
+echo "🔧 Updating database path in main.pl..."
+sed -i.bak "s|SET_YOUR_TAXOBASE_DB|$taxobase_path|" bin/test.pl
+
+# 5. Update ncbi_agent.pl
+echo "🔧 Inserting user email and API key into ncbi_agent.pl..."
+sed -i.bak "s|SET_YOUR_EMAIL|$user_email|" bin/ncbi_agent.pl
+sed -i.bak "s|SET_YOUR_APIKEY|$user_apikey|" bin/ncbi_agent.pl
+
+# Clean up backup files
+rm bin/*.bak
+
+echo
+echo "✅ Setup complete! You can now run:"
+echo
+echo "   conda activate taxobase_env"
+echo "   perl bin/test.pl my_input.tsv"
+echo
