@@ -1,0 +1,12 @@
+
+---
+
+### ✅ Step 5: Add a `.gitignore`
+
+```gitignore
+*.swp
+*.bak
+*.log
+taxonomy_output.txt
+*.db-journal
+__pycache__/
