@@ -13,11 +13,23 @@ echo
 # 2. Prompt for user config
 read -p "📧 Enter your NCBI email: " user_email
 read -p "🔑 Enter your NCBI API key: " user_apikey
-read -p "📂 Enter full path to where TaxoBase.db should be stored: " taxobase_path
 
 # 3. Download the DB
+
+read -p "📂 Enter full path to the folder where TaxoBase.db should be stored: " taxobase_dir
+
+# Expand ~ and check directory exists
+taxobase_dir=$(eval echo "$taxobase_dir")
+if [ ! -d "$taxobase_dir" ]; then
+    echo "❌ Directory does not exist: $taxobase_dir"
+    exit 1
+fi
+
+taxobase_path="$taxobase_dir/TaxoBase.db"
+
 echo "⏬ Downloading latest TaxoBase.db from OSF..."
 wget -q https://osf.io/7gwqr/download -O "$taxobase_path"
+
 
 if [ $? -ne 0 ]; then
   echo "❌ Download failed. Please check your internet connection or URL."
