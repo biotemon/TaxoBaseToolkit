@@ -96,7 +96,7 @@ sub get_tax_id {
 
 
     unlink "taxonomy_output.txt" if -e "taxonomy_output.txt";
-    my $system_cmd = "perl ncbi_agent.pl \"$safe_query\"";
+    my $system_cmd = "perl bin/ncbi_agent.pl \"$safe_query\"";
     system($system_cmd) == 0 or die "Failed to run ncbi_agent.pl on $safe_query\n";
 
     my $status = system($system_cmd);
