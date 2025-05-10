@@ -172,6 +172,16 @@ sub get_tax_id {
 
     my ($query_id, $taxid, $superkingdom_api, $kingdom_api, $phylum_api, $class_api, $order_api, $family_api, $genus_api, $species_api) = @fields;
 
+    # Check if NO_RANK already exists (case-insensitive)
+    my $check_sth = $dbh->prepare("SELECT TAX_ID FROM TAXONOMY WHERE LOWER(NO_RANK) = LOWER(?)");
+    $check_sth->execute($full_id);
+    my ($existing_taxid) = $check_sth->fetchrow_array;
+
+    if ($existing_taxid) {
+        warn "⚠ Duplicate NO_RANK detected: $full_id already exists (TAX_ID=$existing_taxid), skipping insert\n";
+        return $existing_taxid;
+    }
+
     # Insert using updated fields
     my $stmt = $dbh->prepare("INSERT INTO TAXONOMY VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
     $stmt->execute(
@@ -187,8 +197,6 @@ sub get_tax_id {
         smart_species_format($genus_api, $species_api),
         normalize_db_field($full_id)
     );
-
-
 
     return $dbh->last_insert_id(undef, undef, "TAXONOMY", undef);
 }
