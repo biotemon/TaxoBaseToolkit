@@ -129,11 +129,15 @@ sub get_tax_id {
     my $norm_expected = normalize_db_field($full_id);
     my $norm_actual   = normalize_db_field($reported_query);
 
-    unless (defined $reported_query && $norm_expected eq $norm_actual) {
-        warn "❌ taxonomy_output.txt mismatch: expected $norm_expected but got $norm_actual\n";
-        return "NO_TAX_ID";
+    if ($norm_expected ne $norm_actual) {
+        # Accept if the match is a prefix (likely a strain was trimmed)
+        if (index($norm_expected, $norm_actual) == 0) {
+            warn "⚠ Strain-level detail dropped: accepted $norm_actual as a match for $norm_expected\n";
+        } else {
+            warn "❌ taxonomy_output.txt mismatch: expected $norm_expected but got $norm_actual\n";
+            return "NO_TAX_ID";
+        }
     }
-
 
 
     # Check if taxonomy_output.txt is empty or invalid
