@@ -125,10 +125,15 @@ sub get_tax_id {
 
     # Validate that the NO_RANK field matches the full query
     my $reported_query = $fields[-1];
-    unless (defined $reported_query && $reported_query eq $full_id) {
-        warn "❌ taxonomy_output.txt mismatch: expected $full_id but got $reported_query\n";
+
+    my $norm_expected = normalize_db_field($full_id);
+    my $norm_actual   = normalize_db_field($reported_query);
+
+    unless (defined $reported_query && $norm_expected eq $norm_actual) {
+        warn "❌ taxonomy_output.txt mismatch: expected $norm_expected but got $norm_actual\n";
         return "NO_TAX_ID";
     }
+
 
 
     # Check if taxonomy_output.txt is empty or invalid
