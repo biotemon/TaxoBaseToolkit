@@ -172,9 +172,13 @@ sub get_tax_id {
 
     my ($query_id, $taxid, $superkingdom_api, $kingdom_api, $phylum_api, $class_api, $order_api, $family_api, $genus_api, $species_api) = @fields;
 
+    my $norm_no_rank = normalize_db_field($full_id);
+
     # Check if NO_RANK already exists (case-insensitive)
     my $check_sth = $dbh->prepare("SELECT TAX_ID FROM TAXONOMY WHERE LOWER(NO_RANK) = LOWER(?)");
-    $check_sth->execute($full_id);
+    
+    $check_sth->execute($norm_no_rank);
+
     my ($existing_taxid) = $check_sth->fetchrow_array;
 
     if ($existing_taxid) {
@@ -195,7 +199,7 @@ sub get_tax_id {
         normalize_db_field($family_api),
         normalize_db_field($genus_api),
         smart_species_format($genus_api, $species_api),
-        normalize_db_field($full_id)
+        $norm_no_rank
     );
 
     return $dbh->last_insert_id(undef, undef, "TAXONOMY", undef);
