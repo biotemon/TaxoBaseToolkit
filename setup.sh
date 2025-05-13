@@ -39,6 +39,11 @@ fi
 echo "✅ Downloaded TaxoBase.db to: $taxobase_path"
 echo
 
+# Ensure log folder exists
+mkdir -p logs
+touch logs/not_found_taxa.log logs/mismatch_taxa.tsv
+
+
 # 4. Update main.pl
 echo "🔧 Updating database path in main.pl..."
 sed -i.bak "s|SET_YOUR_TAXOBASE_DB|$taxobase_path|" bin/main.pl
