@@ -19,6 +19,9 @@ open my $fh, "<", $input_file or die $!;
 my @lines = <$fh>;
 close $fh;
 
+# Define a mismatch log file
+my $mismatch_log = "logs/mismatch_taxa.tsv";
+
 # Utils
 sub clean_taxon {
     my $t = shift;
@@ -135,6 +138,24 @@ sub get_tax_id {
             warn "⚠ Strain-level detail dropped: accepted $norm_actual as a match for $norm_expected\n";
         } else {
             warn "❌ taxonomy_output.txt mismatch: expected $norm_expected but got $norm_actual\n";
+
+            # Log mismatch lineage to logs/mismatch_taxa.tsv
+            open my $logfh, ">>", $mismatch_log or die "Cannot open $mismatch_log: $!\n";
+
+            # Write header if file is new
+            if (-z $mismatch_log) {
+                print $logfh join("\t", "ORIGINAL_QUERY", "REPORTED_QUERY", qw(TAX_ID SUPERKINGDOM KINGDOM PHYLUM CLASS ORDER FAMILY GENUS SPECIES NO_RANK)), "\n";
+            }
+
+            my @fields_to_log = (
+                $full_id,            # ORIGINAL_QUERY (raw input)
+                $reported_query,     # REPORTED_QUERY (returned by NCBI)
+                @fields[1..10]       # Tax ID + full lineage
+            );
+
+            print $logfh join("\t", map { normalize_db_field($_) } @fields_to_log), "\n";
+            close $logfh;
+        
             return "NO_TAX_ID";
         }
     }
