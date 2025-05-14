@@ -81,6 +81,8 @@ sub get_tax_id {
     my @row = $sth->fetchrow_array;
     return $row[0] if @row;
 
+    my $norm_no_rank = normalize_db_field($full_id);
+
     # Try NO_RANK using normalized form
     $sql = "SELECT * FROM TAXONOMY WHERE NO_RANK=?";
     $sth = $dbh->prepare($sql);
@@ -91,7 +93,6 @@ sub get_tax_id {
     # No match found — call ncbi_agent.pl
     my $safe_query = $full_id;
     $safe_query =~ s/'//g;  # Remove any quotes
-    my $norm_no_rank = normalize_db_field($full_id);
 
     print "🕒 Fetching from NCBI: $safe_query\n";
 
