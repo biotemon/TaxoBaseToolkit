@@ -81,16 +81,17 @@ sub get_tax_id {
     my @row = $sth->fetchrow_array;
     return $row[0] if @row;
 
-    # Try NO_RANK
+    # Try NO_RANK using normalized form
     $sql = "SELECT * FROM TAXONOMY WHERE NO_RANK=?";
     $sth = $dbh->prepare($sql);
-    $sth->execute($full_id);
+    $sth->execute($norm_no_rank);
     @row = $sth->fetchrow_array;
     return $row[0] if @row;
 
     # No match found — call ncbi_agent.pl
     my $safe_query = $full_id;
     $safe_query =~ s/'//g;  # Remove any quotes
+    my $norm_no_rank = normalize_db_field($full_id);
 
     print "🕒 Fetching from NCBI: $safe_query\n";
 
@@ -192,8 +193,6 @@ sub get_tax_id {
     @fields = split /\t/, $line;
 
     my ($query_id, $taxid, $superkingdom_api, $kingdom_api, $phylum_api, $class_api, $order_api, $family_api, $genus_api, $species_api) = @fields;
-
-    my $norm_no_rank = normalize_db_field($full_id);
 
     # Check if NO_RANK already exists (case-insensitive)
     my $check_sth = $dbh->prepare("SELECT TAX_ID FROM TAXONOMY WHERE LOWER(NO_RANK) = LOWER(?)");
