@@ -28,7 +28,7 @@ fi
 taxobase_path="$taxobase_dir/TaxoBase.db"
 
 echo "⏬ Downloading latest TaxoBase.db from OSF..."
-wget -q https://osf.io/y3v67/download -O "$taxobase_path"
+wget -q https://osf.io/8vyez/download -O "$taxobase_path"
 
 
 if [ $? -ne 0 ]; then
