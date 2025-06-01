@@ -281,7 +281,7 @@ foreach (@lines) {
         normalize_db_field($count),
         map { normalize_db_field($_) } @row[1..10],
         smart_species_format($row[9], $row[10]),    
-        "_"
+        normalize_db_field($row[11])
     );
     print $out join("\t", @output_fields), "\n";
 
