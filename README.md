@@ -8,7 +8,8 @@ This toolkit provides a portable pipeline to normalize and annotate microbial an
 - `main.pl` — main pipeline script
 - `ncbi_agent.pl` — supplemental taxonomy fetcher
 - `phylum_dictionary.txt` — curated phylum-to-kingdom/superkingdom map
-- `TaxoBase.db` — SQLite taxonomy database. The latest version is available at: 
+- `TaxoBase.db` — SQLite taxonomy database. The latest version is available at:
+- `plot_community_structure_template.R` - R script to perform hierarchical taxonomy coalescence and visualization
 
 
 ## 🚀 Quickstart
@@ -59,7 +60,7 @@ TaxoBaseToolkit/
 ├── bin/
 │   ├── main.pl               # Main taxonomy expansion pipeline
 │   ├── ncbi_agent.pl         # NCBI query helper script
-│   └── plot_community_structure_template.R     # Use the output of main.pl to perform hierarchical coallescense and visualization 
+│   └── plot_community_structure_template.R     # Use the output of main.pl to perform hierarchical coalescence and visualization 
 ├── scripts/
 │   └── run_plot_community_structure.sh
 ├── data/
