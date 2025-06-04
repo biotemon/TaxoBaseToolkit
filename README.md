@@ -57,8 +57,11 @@ Installed automatically by `setup.sh via Conda:
 ```graphql
 TaxoBaseToolkit/
 ├── bin/
-│   ├── test.pl               # Main taxonomy expansion pipeline
-│   └── ncbi_agent.pl         # NCBI query helper script
+│   ├── main.pl               # Main taxonomy expansion pipeline
+│   ├── ncbi_agent.pl         # NCBI query helper script
+│   └── plot_community_structure_template.R     # Use the output of main.pl to perform hierarchical coallescense and visualization 
+├── scripts/
+│   └── run_plot_community_structure.sh
 ├── data/
 │   └── phylum_dictionary.txt # Phylum-to-kingdom/superkingdom map
 ├── db/
@@ -76,7 +79,8 @@ After the setup:
 
 ```bash
 conda activate taxobase_env
-perl bin/test.pl path/to/your_input_table.tsv
+perl bin/main.pl path/to/your_input_table.tsv
+bash scripts/run_plot_community_structure.sh
 ```
 
 
