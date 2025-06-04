@@ -254,7 +254,7 @@ print "Generating output file...\n";
 (my $outfile = $input_file) =~ s/\.[^.]+$//;  # Remove extension (e.g., .txt, .tsv)
 $outfile .= "_taxonomyXcounts.txt";
 open my $out, ">", $outfile or die "Cannot open $outfile: $!\n";
-print $out join("\t", qw(GENE_ID TAX_ID ASSEMBLY_ID READ_COUNTS SOURCE ITIS_NUMBER SUPERKINGDOM KINGDOM PHYLUM CLASS ORDER_TAX FAMILY GENUS SPECIES SUBSPECIES NO_RANK)), "\n";
+print $out join("\t", qw(TAX_ID SAMPLE_ID READ_COUNTS SOURCE ITIS_NUMBER SUPERKINGDOM KINGDOM PHYLUM CLASS ORDER_TAX FAMILY GENUS SPECIES)), "\n";
 
 $pb = Term::ProgressBar->new(scalar @lines);
 $count = 0;
@@ -275,13 +275,10 @@ foreach (@lines) {
     }
 
     my @output_fields = (
-        normalize_db_field($query),
         normalize_db_field($tax_id),
         normalize_db_field($assembly_id),
         normalize_db_field($count),
         map { normalize_db_field($_) } @row[1..10],
-        smart_species_format($row[9], $row[10]),    
-        normalize_db_field($row[11])
     );
     print $out join("\t", @output_fields), "\n";
 
